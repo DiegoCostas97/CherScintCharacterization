@@ -3,6 +3,7 @@
 The code performs an early Cherenkov and Scintillation light analysis for a WCSim simulation output file.
 Note that this code processes an `.npz` file produced by the [WatChMal DataTools](https://github.com/WatChMaL/DataTools).
 
+## Overall Information
 - first.py
 This file has all the needed functions for the analysis.
 
@@ -20,6 +21,7 @@ Runs the functions inside first.py and performs the actual analysis. This will r
 
 Please note that this relies on a previous set of functions, contained inside the [WCSimFilePackages](https://github.com/DiegoCostas97/WCSimFilePackages) repository.
 
+## How to run the code
 In order to run the analysis, just 
 ```
 python second.py int(/DAQ/TriggerNDigits/Threshold) int(/DAQ/TriggerSaveFailures/Mode) int(NumberOfEvents)
@@ -32,7 +34,7 @@ python second.py int(/DAQ/TriggerNDigits/Threshold) int(/DAQ/TriggerSaveFailures
 Please note that you'll need to modify the path for the "paquetes" library (i.e. [WCSimFilePackages](https://github.com/DiegoCostas97/WCSimFilePackages))
 as well as the path for `first.py`.
 
-Require dependecies are:
+## Required libraries
 ```
 numpy
 matplotlib
