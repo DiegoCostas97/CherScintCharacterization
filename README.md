@@ -24,7 +24,7 @@ In order to run the analysis, just
 python second.py
 ```
 
-Please note that you'll need to modify the path for the "paquetes" library (i.e. WCSimFilePackages)
+Please note that you'll need to modify the path for the "paquetes" library (i.e. [WCSimFilePackages]([https://www.genome.gov/](https://github.com/DiegoCostas97/WCSimFilePackages))
 as well as the path for `first.py`.
 
 Require dependecies are:
