@@ -77,12 +77,14 @@ events_anyCher, counts_anyCher = anyCherenkov_info(electrons_that_produce_cheren
 print(" ")
 print("In {} events we have DigiHits produced by the Cherenkov light from any gamma".format(len(events_anyCher)))
 print("Maximum number of DigiHits per event is {}".format(np.max(counts_anyCher)))
+print("Average number of DigiHits per event is {:.0f}".format(np.mean(counts_anyCher)))
 print(" ")
 
 events_nCCher, counts_nCCher, indices_nCCher = nCapture_Cherenkov_info(electrons_from_nCapture, df_digiHits)
 
 print("In {} events we have DigiHits produced by the Cherenkov light from the nCapture gamma".format(len(events_nCCher)))
 print("Maximum number of DigiHits per event is {}".format(np.max(counts_nCCher)))
+print("Average number of DigiHits per event is {:.0f}".format(np.mean(counts_nCCher)))
 
 # Plot
 plot_light(counts_scint, 50, "Tag", "Scintillation", events_scint, threshold, sfm, "./scint_light.pdf", plot=False, save=True)
