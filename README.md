@@ -17,14 +17,14 @@ Runs the functions inside first.py and performs the actual analysis. This will r
         - Cherenkov light coming from the nCapture Gamma-Ray plot + info.
         - Reconstruction variables (inputs + possible targets) stored in file.
 
-Please note that this relies on a previous set of functions, contained inside the [WCSimFilePackages](https://www.genome.gov/](https://github.com/DiegoCostas97/WCSimFilePackages) repository.
+Please note that this relies on a previous set of functions, contained inside the [WCSimFilePackages](https://github.com/DiegoCostas97/WCSimFilePackages) repository.
 
 In order to run the analysis, just 
 ```
 python second.py
 ```
 
-Please note that you'll need to modify the path for the "paquetes" library (i.e. [WCSimFilePackages](https://www.genome.gov/](https://github.com/DiegoCostas97/WCSimFilePackages))
+Please note that you'll need to modify the path for the "paquetes" library (i.e. [WCSimFilePackages](https://github.com/DiegoCostas97/WCSimFilePackages))
 as well as the path for `first.py`.
 
 Require dependecies are:
