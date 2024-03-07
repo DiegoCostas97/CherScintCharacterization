@@ -1,6 +1,7 @@
 # CherScintCharacterization
 
 The code performs an early Cherenkov and Scintillation light analysis for a WCSim simulation output file.
+Note that this code processes an `.npz` file produced by the [WatChMal DataTools](https://github.com/WatChMaL/DataTools).
 
 - first.py
 This file has all the needed functions for the analysis.
@@ -21,8 +22,12 @@ Please note that this relies on a previous set of functions, contained inside th
 
 In order to run the analysis, just 
 ```
-python second.py
+python second.py int(/DAQ/TriggerNDigits/Threshold) int(/DAQ/TriggerSaveFailures/Mode) int(NumberOfEvents)
 ```
+
+- `/DAQ/TriggerNDigits/Threshold` is the one you set in your `daq.mac` file.
+- `/DAQ/TriggerSaveFailures/Mode` is the one you set in your `daq.mac` file.
+- `NumberOfEvents` is the number of events processed by `event_dump.py`.
 
 Please note that you'll need to modify the path for the "paquetes" library (i.e. [WCSimFilePackages](https://github.com/DiegoCostas97/WCSimFilePackages))
 as well as the path for `first.py`.
