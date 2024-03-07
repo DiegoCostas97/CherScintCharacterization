@@ -24,7 +24,7 @@ Please note that this relies on a previous set of functions, contained inside th
 ## How to run the code
 In order to run the analysis, just 
 ```
-python second.py int(/DAQ/TriggerNDigits/Threshold) int(/DAQ/TriggerSaveFailures/Mode) int(NumberOfEvents)
+python3 second.py int(/DAQ/TriggerNDigits/Threshold) int(/DAQ/TriggerSaveFailures/Mode) int(NumberOfEvents)
 ```
 
 - `/DAQ/TriggerNDigits/Threshold` is the one you set in your `daq.mac` file.
