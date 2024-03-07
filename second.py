@@ -25,11 +25,11 @@ from first import writeTriggerTimesPDF
 
 
 # Path to the npz file in our machine
-npz = '/Users/diiego/Desktop/install/wcsim.npz'
+npz = str(sys.argv[1])
 
-threshold = 2   #/DAQ/TriggerNDigits/Threshold set in macros/daq.mac. Needed for the plots.
-sfm       = 0   #/DAQ/TriggerSaveFailures/Mode set in macros/daq.mac. Needed for the plots.
-nevents   = 100 # Number of events in the .npz
+threshold = int(sys.argv[2])   #/DAQ/TriggerNDigits/Threshold set in macros/daq.mac. Needed for the plots.
+sfm       = int(sys.argv[3])   #/DAQ/TriggerSaveFailures/Mode set in macros/daq.mac. Needed for the plots.
+nevents   = int(sys.argv[4])   # Number of events in the .npz
 
 # Creation of the three main DataFrames: trueHits, digiHits and tracks
 df_trueHits       = truehits_info_to_df(npz)
