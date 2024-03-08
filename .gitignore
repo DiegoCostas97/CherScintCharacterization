@@ -1,6 +1,7 @@
 # .gitignore file adapted from https://github.com/github/gitignore.git
 *.h5
 *.pdf
+.DS_Store
 
 # Byte-compiled / optimized / DLL files
 *__pycache__/
