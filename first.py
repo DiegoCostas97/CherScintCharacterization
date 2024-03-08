@@ -21,7 +21,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 # - Number of events with DigiHits (i.e. meeting the threshold), also related to the trigger threshold
 
 def neutronEnergySpectrum(track_df, path, plot=False, save=True):
-    fig = plt.figure(figsize=(7,7))
+    fig = plt.figure(figsize=(8,6))
     neutron_mass = 939.56542052
     df = pd.read_csv("/Users/diiego/Library/Mobile Documents/com~apple~CloudDocs/Desktop/DIEGO_cloud/USC/PHD/HK/HK SOURCES/code/ambe_source/npz_ana/copy_alnspectra_A.dat", 
                      sep=" ")
@@ -59,7 +59,7 @@ def neutronEnergySpectrum(track_df, path, plot=False, save=True):
     return 0
 
 def gammaEnergySpectrum(track_df, path, plot=False, save=True):
-    fig = plt.figure(figsize=(7,7))
+    fig = plt.figure(figsize=(8,6))
     plt.hist(track_df[track_df['track_id'] == 2]['track_energy'], bins=50);
     plt.xlabel("Tag Gamma Energy [MeV]");
 
@@ -79,7 +79,7 @@ def nCaptureNumber(track_df, nevents):
     print("In {} events the neutron is captured in the water, this represents a {:.2f}% of the total".format(data, data/float(nevents)*100))
 
 def digiHitsNumber(digihit_df, path, threshold, plot=False, save=True):
-    fig = plt.figure(figsize=(7,7))
+    fig = plt.figure(figsize=(8,6))
     plt.hist(digihit_df.groupby('event_id').count()['digi_hit_pmt'].values);
     plt.vlines(threshold,0,300, color='r');
     plt.xlim(0, 50);
@@ -206,7 +206,7 @@ def scintillation_info(e, df):
 ###################################################################################################
 # Plot Light DigiHits
 def plot_light(data, bins, gamma_type, light_type, events, threshold, sfm, path, plot=False, save=True):
-        fig = plt.figure(figsize=(7,7))
+        fig = plt.figure(figsize=(8,6))
 
         plt.hist(data, bins=bins, color='green', alpha=0.4)
         plt.xlabel('# of DigiHits produced by {} Gamma {} Hits'.format(gamma_type, light_type))
@@ -404,7 +404,7 @@ def writeTriggerTimesPDF(nevents, df, path):
 
             trigger_list = ["Trigger_"+str(i) for i in triggers]
 
-            fig = plt.figure(figsize=(7,7))
+            fig = plt.figure(figsize=(8,6))
 
             ax1 = fig.add_subplot(211)
 
