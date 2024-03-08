@@ -10,6 +10,97 @@ from tqdm                            import tqdm
 from matplotlib.backends.backend_pdf import PdfPages
 
 ##################################################################################################
+##################################################################################################
+##################################################################################################
+# First, we need to run some checks in order to know that our simulation is doing what we expect
+# it to do.
+# - Neutron Energy Spectrum Plot
+# - Gamma Energy Spectrum Plot
+# - Number of nCaptures in the simulation (expected 1 per event)
+# - Number of DigiHits per event. Related to the trigger threshold
+# - Number of events with DigiHits (i.e. meeting the threshold), also related to the trigger threshold
+
+def neutronEnergySpectrum(track_df, path, plot=False, save=True):
+    fig = plt.figure(figsize=(7,7))
+    neutron_mass = 939.56542052
+    df = pd.read_csv("/Users/diiego/Library/Mobile Documents/com~apple~CloudDocs/Desktop/DIEGO_cloud/USC/PHD/HK/HK SOURCES/code/ambe_source/npz_ana/copy_alnspectra_A.dat", 
+                     sep=" ")
+
+    energy = (track_df[track_df['track_id'] == 1]['track_energy'] - neutron_mass)
+    counts, bins = np.histogram(energy, 50)
+
+    counts
+    normalized_counts = counts / np.max(counts) * np.max(df['CountsSum'].to_numpy())
+
+    valuesQ0 = df['CountsQ0'].to_numpy()
+    valuesQ0[valuesQ0==0] = np.nan
+    valuesQ1 = df['CountsQ1'].to_numpy()
+    valuesQ1[valuesQ1==0] = np.nan
+    valuesQ2 = df['CountsQ2'].to_numpy()
+    valuesQ2[valuesQ2==0] = np.nan
+
+    plt.bar(bins[0:-1], normalized_counts, width=0.5, color='lightseagreen', label='MC Simulated Data');
+    plt.plot(df['Energy'], valuesQ0, linestyle='-.', color='red', label='Ground State Contribution');
+    plt.plot(df['Energy'], valuesQ1, linestyle='--', color='yellow', label='First Excited State Contribution');
+    plt.plot(df['Energy'], valuesQ2, linestyle=':', color='blue', label='Second Excited State Contribution');
+
+    plt.xlabel('Neutron Energy [MeV]');
+
+    plt.legend();
+
+    if plot:
+        plt.show()
+
+    if save:
+        plt.savefig(path)
+
+    plt.close
+
+    return 0
+
+def gammaEnergySpectrum(track_df, path, plot=False, save=True):
+    fig = plt.figure(figsize=(7,7))
+    plt.hist(track_df[track_df['track_id'] == 2]['track_energy'], bins=50);
+    plt.xlabel("Tag Gamma Energy [MeV]");
+
+    if plot:
+        plt.show()
+
+    if save:
+        plt.savefig(path)
+
+    plt.close
+
+    return 0
+
+
+def nCaptureNumber(track_df, nevents):
+    data = len(track_df[(track_df['track_creator_process'].values == 'nCapture') & (track_df['track_pid'].values == 22)])
+    print("In {} events the neutron is captured in the water, this represents a {:.2f}% of the total".format(data, data/float(nevents)*100))
+
+def digiHitsNumber(digihit_df, path, threshold, plot=False, save=True):
+    fig = plt.figure(figsize=(7,7))
+    plt.hist(digihit_df.groupby('event_id').count()['digi_hit_pmt'].values);
+    plt.vlines(threshold,0,300, color='r');
+    plt.xlim(0, 50);
+
+    plt.xlabel("Number of DigiHits per Event")
+
+    if plot:
+        plt.show()
+
+    if save:
+        plt.savefig(path)
+
+    plt.close
+
+    return 0
+
+def eventsWithDigihits(digihits_df, nevents):
+    data = len(np.unique(digihits_df['event_id']))
+    print("{} events meet the DigiHits threshold. This represent a {:.2f}% of the total".format(data, data/float(nevents)*100))
+
+###################################################################################################
 ###################################################################################################
 ###################################################################################################
 # Selection of the DigiHits for reconstruction

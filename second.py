@@ -8,10 +8,15 @@ path_to_paquetes = "/Users/diiego/Library/Mobile Documents/com~apple~CloudDocs/D
 sys.path.append(path_to_paquetes)
 sys.path.append(path_to_first)
 
-from npz_to_df                       import truehits_info_to_df
-from npz_to_df                       import simple_track_info_to_df
-from npz_to_df                       import digihits_info_to_df
+from npz_to_df import truehits_info_to_df
+from npz_to_df import simple_track_info_to_df
+from npz_to_df import digihits_info_to_df
 
+from first import neutronEnergySpectrum
+from first import gammaEnergySpectrum
+from first import nCaptureNumber
+from first import digiHitsNumber
+from first import eventsWithDigihits
 from first import electrons_from_Scintillation
 from first import real_scintillation_electrons
 from first import scintillation_info
@@ -32,11 +37,23 @@ sfm       = int(sys.argv[3])   #/DAQ/TriggerSaveFailures/Mode set in macros/daq.
 nevents   = int(sys.argv[4])   # Number of events in the .npz
 
 # Creation of the three main DataFrames: trueHits, digiHits and tracks
+print("Creating DataFrames...")
 df_trueHits       = truehits_info_to_df(npz)
 df_digiHits       = digihits_info_to_df(npz, nevents)
 df_simple_track   = simple_track_info_to_df(npz) # This is simpler and less memory consuming version
                                                  # of the tracks_df. Please note there is a more complex
                                                  # version in "paquetes" under the name of track_info_to_df
+print("DataFrames Created!")
+print(" ")
+
+# Simulation Check Plots and prints
+print("Running Simulation Checks...")
+neutronEnergySpectrum(df_simple_track, "./neutronEnergySpectrum.png")
+gammaEnergySpectrum(df_simple_track, "./gammaEnergySpectrum.png")
+nCaptureNumber(df_simple_track, nevents)
+digiHitsNumber(df_digiHits, "./digiHitsNumber.png", threshold)
+eventsWithDigihits(df_digiHits, nevents)
+print(" ")
 
 # Selection of every Scintillation Photon
 events_with_Scintillation = np.unique(df_simple_track[df_simple_track['track_creator_process'] == 'Scintillation']['event_id'].to_numpy())
