@@ -382,7 +382,7 @@ def output_reconstruction_variables(light_df, track_df):
         temp_df_neutr = track_df[track_df['event_id'].values == i]
 
         neutr_int_vertex.append(temp_df_neutr[(temp_df_neutr['track_id'].values == 1)]['track_rf'].values[0])
-        neutr_int_vertex.append(temp_df_gamma['track_ti'].values[0])
+        neutr_int_time.append(temp_df_gamma['track_ti'].values[0])
 
     return charge, time, position, gamma_int_vertex, gamma_int_time, gamma_cre_vertex, neutr_int_vertex, neutr_int_time
 
