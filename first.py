@@ -356,8 +356,10 @@ def output_reconstruction_variables(light_df, track_df):
 
     # Output
     gamma_int_vertex = []
+    gamma_int_time   = []
     gamma_cre_vertex = []
     neutr_int_vertex = []
+    neutr_int_time   = []
 
     gamma_df = track_df[(track_df['track_creator_process'].values == 'nCapture') &
                             (track_df['track_pid'].values == 22)]
@@ -374,13 +376,15 @@ def output_reconstruction_variables(light_df, track_df):
         temp_df_gamma = gamma_df[(gamma_df['event_id'].values == i)]
 
         gamma_int_vertex.append(temp_df_gamma['track_rf'].values[0])
+        gamma_int_time.append(temp_df_gamma['track_ti'].values[0]) # Please note this is not correct, but WCSim does not return a stop time for the tracks
         gamma_cre_vertex.append(temp_df_gamma['track_ri'].values[0])
 
         temp_df_neutr = track_df[track_df['event_id'].values == i]
 
         neutr_int_vertex.append(temp_df_neutr[(temp_df_neutr['track_id'].values == 1)]['track_rf'].values[0])
+        neutr_int_vertex.append(temp_df_gamma['track_ti'].values[0])
 
-    return charge, time, position, gamma_int_vertex, gamma_cre_vertex, neutr_int_vertex
+    return charge, time, position, gamma_int_vertex, gamma_int_time, gamma_cre_vertex, neutr_int_vertex, neutr_int_time
 
 ###################################################################################################
 ###################################################################################################

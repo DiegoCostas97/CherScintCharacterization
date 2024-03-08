@@ -68,7 +68,6 @@ electrons_that_produce_scintillation = electrons_from_Scintillation(sHits_Tag, s
 electrons_from_tagGamma              = real_scintillation_electrons(df_simple_track, electrons_that_produce_scintillation, scint_nevents)
 print(" ")
 
-
 events_scint, counts_scint, indices_scint = scintillation_info(electrons_from_tagGamma, df_digiHits)
 print(" ")
 
@@ -123,17 +122,18 @@ scint_indices = df_scint[df_scint['event_id'].isin(common_evts)].index.to_numpy(
 
 final_indices = np.sort(np.concatenate([cher_indices, scint_indices]))
 
-df_final = df_digiHits.loc[final_indices]
-df_final_cher = df_cher[df_cher['event_id'].isin(common_evts)]
+df_final       = df_digiHits.loc[final_indices]
+df_final_cher  = df_cher[df_cher['event_id'].isin(common_evts)]
+df_final_scint = df_scint[df_scint['event_id'].isin(common_evts)]
 
 # Output Reconstruction Variables
-charge, time, position, gamma_int_vertex, gamma_cre_vertex, neutr_int_vertex = output_reconstruction_variables(df_cher, df_simple_track)
+charge, time, position, gamma_int_vertex, gamma_int_time, gamma_cre_vertex, neutr_int_vertex, neutr_int_time = output_reconstruction_variables(df_cher, df_simple_track)
 
 # Save the variables in a file
 path = "./reconstruction_variables.pkl"
 print("Saving Reconstruction Varibales at {}".format(path))
 with open(path, 'wb') as file:
-    pickle.dump([charge, time, position, gamma_int_vertex, gamma_cre_vertex, neutr_int_vertex], file)
+    pickle.dump([charge, time, position, gamma_int_vertex, gamma_int_time, gamma_cre_vertex, neutr_int_vertex, neutr_int_time], file)
 
 # Just write that many events as you want to inspect, default is 5
 inspected_files = 5
