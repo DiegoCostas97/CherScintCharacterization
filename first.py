@@ -353,6 +353,9 @@ def output_reconstruction_variables(light_df, track_df):
     charge   = []
     time     = []
     position = []
+    x        = []
+    y        = []
+    z        = []
 
     # Output
     gamma_int_vertex = []
@@ -371,6 +374,9 @@ def output_reconstruction_variables(light_df, track_df):
         charge.append(list(temp_df['digi_hit_charge']))
         time.append(list(temp_df['digi_hit_time'].values))
         position.append(list(temp_df['digi_hit_r'].values))
+        x.append(list(temp_df['digi_hit_x'].values))
+        y.append(list(temp_df['digi_hit_y'].values))
+        z.append(list(temp_df['digi_hit_z'].values))
 
         # Output
         temp_df_gamma = gamma_df[(gamma_df['event_id'].values == i)]
@@ -384,7 +390,7 @@ def output_reconstruction_variables(light_df, track_df):
         neutr_int_vertex.append(temp_df_neutr[(temp_df_neutr['track_id'].values == 1)]['track_rf'].values[0])
         neutr_int_time.append(temp_df_gamma['track_ti'].values[0])
 
-    return charge, time, position, gamma_int_vertex, gamma_int_time, gamma_cre_vertex, neutr_int_vertex, neutr_int_time
+    return charge, time, position, x, y, z, gamma_int_vertex, gamma_int_time, gamma_cre_vertex, neutr_int_vertex, neutr_int_time
 
 ###################################################################################################
 ###################################################################################################

@@ -127,13 +127,13 @@ df_final_cher  = df_cher[df_cher['event_id'].isin(common_evts)]
 df_final_scint = df_scint[df_scint['event_id'].isin(common_evts)]
 
 # Output Reconstruction Variables
-charge, time, position, gamma_int_vertex, gamma_int_time, gamma_cre_vertex, neutr_int_vertex, neutr_int_time = output_reconstruction_variables(df_cher, df_simple_track)
+charge, time, position, x, y, z, gamma_int_vertex, gamma_int_time, gamma_cre_vertex, neutr_int_vertex, neutr_int_time = output_reconstruction_variables(df_cher, df_simple_track)
 
 # Save the variables in a file
 path = "./reconstruction_variables.pkl"
 print("Saving Reconstruction Varibales at {}".format(path))
 with open(path, 'wb') as file:
-    pickle.dump([charge, time, position, gamma_int_vertex, gamma_int_time, gamma_cre_vertex, neutr_int_vertex, neutr_int_time], file)
+    pickle.dump([charge, time, position, x, y, z, gamma_int_vertex, gamma_int_time, gamma_cre_vertex, neutr_int_vertex, neutr_int_time], file)
 
 # Just write that many events as you want to inspect, default is 5
 inspected_files = 5
