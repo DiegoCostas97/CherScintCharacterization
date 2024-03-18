@@ -392,6 +392,28 @@ def output_reconstruction_variables(light_df, track_df):
 
     return charge, time, position, x, y, z, gamma_int_vertex, gamma_int_time, gamma_cre_vertex, neutr_int_vertex, neutr_int_time
 
+def output_background_variables(light_df):
+    # Input
+    charge   = []
+    time     = []
+    position = []
+    x        = []
+    y        = []
+    z        = []
+
+    for i in tqdm(np.unique(light_df['event_id']), desc="Outputting Background Variables", unit="iter", dynamic_ncols=True):
+        # Input
+        temp_df = light_df[light_df['event_id'].values == i]
+
+        charge.append(list(temp_df['digi_hit_charge']))
+        time.append(list(temp_df['digi_hit_time'].values))
+        position.append(list(temp_df['digi_hit_r'].values))
+        x.append(list(temp_df['digi_hit_x'].values))
+        y.append(list(temp_df['digi_hit_y'].values))
+        z.append(list(temp_df['digi_hit_z'].values))
+
+    return charge, time, position, x, y, z
+
 ###################################################################################################
 ###################################################################################################
 ###################################################################################################
