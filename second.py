@@ -115,8 +115,7 @@ cher_events  = np.unique(df_cher['event_id'])
 scint_events = np.unique(df_scint['event_id'])
 
 common_evts = [i for i in np.unique(df_digiHits['event_id']) if i in cher_events and i in scint_events]
-print("There are {} events with both Tag and nCapture light".format(len(common_evts)))
-print(" ")
+print("There are {} events with both Tag and nCapture light\n".format(len(common_evts)))
 cher_indices  = df_cher[df_cher['event_id'].isin(common_evts)].index.to_numpy()
 scint_indices = df_scint[df_scint['event_id'].isin(common_evts)].index.to_numpy()
 
@@ -126,14 +125,63 @@ df_final       = df_digiHits.loc[final_indices]
 df_final_cher  = df_cher[df_cher['event_id'].isin(common_evts)]
 df_final_scint = df_scint[df_scint['event_id'].isin(common_evts)]
 
+# Now we want to store the Cherenkov Light and the Dark Noise, but first we need some additional filtering
+# We only want the Cherenkov and Dark Noise Hits after the last Scintillation hit, and no further than 250 us
+last_tag_hit_time = df_final_scint.groupby('event_id')['digi_hit_time'].max()
+repeated_last_tag_hit_time = df_final_cher['event_id'].map(last_tag_hit_time)
+
+# Add the column 'last_tag_hit_time' to df_final_cher
+df_final_cher.loc[:, 'last_tag_hit_time'] = repeated_last_tag_hit_time
+
+# Actually filter
+filter_df_final_cher = df_final_cher.loc[(df_final_cher['digi_hit_time'] >= df_final_cher['last_tag_hit_time']) & (df_final_cher['digi_hit_time'] < df_final_cher['last_tag_hit_time']+250000)]
+
+indices = []
+
+# This should be in first.py, we are selecting the Dark Noise
+for i in tqdm(np.unique(filter_df_final_cher['event_id'])):
+    temp_df = df_digiHits[df_digiHits['event_id'] == i]
+    tag_t   = filter_df_final_cher[filter_df_final_cher['event_id'].values == i]['last_tag_hit_time'].values[0]
+
+    for p, ind, cher_t in zip(temp_df['digi_hit_truehit_parent_trackID'], temp_df['digi_hit_truehit_parent_trackID'].index, temp_df['digi_hit_time']):
+        if -1 in p and cher_t >= tag_t and cher_t < tag_t + 250000:
+            indices.append(ind)
+
+bkg_df = df_digiHits.loc[indices]
+
 # Output Reconstruction Variables
-charge, time, position, x, y, z, gamma_int_vertex, gamma_int_time, gamma_cre_vertex, neutr_int_vertex, neutr_int_time = output_reconstruction_variables(df_cher, df_simple_track)
+charge, time, position, x, y, z = output_background_variables(bkg_df)
+
+# Save the variables in a file
+path = "./background_variables.pkl"
+print("Saving Background Varibales at {}\n".format(path))
+
+with open(path, 'wb') as file:
+    pickle.dump([charge, time, position, x, y, z], file)
+
+# Only store events with Dark Noise
+events_with_no_dr           = [i for i in np.unique(filter_df_final_cher['event_id']) if i not in np.unique(bkg_df['event_id'])]
+filter_df_final_cher_events = np.unique(filter_df_final_cher['event_id'])
+
+final_events = [i for i in filter_df_final_cher_events if i not in events_with_no_dr]
+
+# Output Reconstruction Variables
+final_data = filter_df_final_cher[filter_df_final_cher['event_id'].isin(final_events)]
+charge, time, position, x, y, z, gamma_int_vertex, gamma_int_time, gamma_cre_vertex, neutr_int_vertex, neutr_int_time = output_reconstruction_variables(final_data, df_simple_track)
 
 # Save the variables in a file
 path = "./reconstruction_variables.pkl"
 print("Saving Reconstruction Varibales at {}".format(path))
+
 with open(path, 'wb') as file:
     pickle.dump([charge, time, position, x, y, z, gamma_int_vertex, gamma_int_time, gamma_cre_vertex, neutr_int_vertex, neutr_int_time], file)
+
+# Create the DataFrame with the Cherenkov and the Dark Noise
+merged_df = pd.concat([filter_df_final_cher, bkg_df])
+merged_df.sort_values(by='event_id', inplace=True)
+
+#Save it
+merged_df.to_csv("./cher_and_bkg_df.csv", index=False)
 
 # Just write that many events as you want to inspect, default is 5
 inspected_files = 5
