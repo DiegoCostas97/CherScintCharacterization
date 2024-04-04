@@ -2,6 +2,7 @@ import sys
 import pickle
 
 import numpy as np
+import pandas as pd
 
 path_to_first    = "/Users/diiego/Library/Mobile Documents/com~apple~CloudDocs/Desktop/DIEGO_cloud/USC/PHD/HK/HK SOURCES/code/ambe_source/npz_ana/cher_scint_characterization"
 path_to_paquetes = "/Users/diiego/Library/Mobile Documents/com~apple~CloudDocs/Desktop/DIEGO_cloud/USC/PHD/HK/HK SOURCES/code/ambe_source/npz_ana/paquetes"
@@ -26,7 +27,10 @@ from first import anyCherenkov_info
 from first import nCapture_Cherenkov_info
 from first import plot_light
 from first import output_reconstruction_variables
+from first import output_background_variables
 from first import writeTriggerTimesPDF
+
+from tqdm import tqdm
 
 
 # Path to the npz file in our machine
