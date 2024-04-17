@@ -328,7 +328,7 @@ def nCapture_Cherenkov_info(e, df):
         for j, l in zip(temp_df['digi_hit_truehit_parent_trackID'], temp_df['digi_hit_truehit_parent_trackID'].index):
             # Loop over the electrons created by the nCapture gamma in this event
             for k in e[i]:
-                # If the electron is in the DigiHits DF, append the index and count
+                # If this event actually has DigiHits and the electron is in the DigiHits DF, append the index and count
                 if temp_df.notna().any()[1] and k in j:
                     indices_nCCher.append(l)
                     count += 1
