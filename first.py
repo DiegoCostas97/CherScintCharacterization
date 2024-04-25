@@ -78,11 +78,11 @@ def nCaptureNumber(track_df, nevents):
     data = len(track_df[(track_df['track_creator_process'].values == 'nCapture') & (track_df['track_pid'].values == 22)])
     print("In {} events the neutron is captured in the water, this represents a {:.2f}% of the total".format(data, data/float(nevents)*100))
 
-def digiHitsNumber(digihit_df, path, threshold, plot=False, save=True):
+def digiHitsNumber(digihit_df, path, threshold, lim, plot=False, save=True):
     fig = plt.figure(figsize=(8,6))
     plt.hist(digihit_df.groupby('event_id').count()['digi_hit_pmt'].values);
     plt.vlines(threshold,0,300, color='r');
-    plt.xlim(0, 50);
+    plt.xlim(0, lim);
 
     plt.xlabel("Number of DigiHits per Event")
 
