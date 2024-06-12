@@ -209,17 +209,21 @@ def plot_light(data, bins, gamma_type, light_type, events, threshold, sfm, path,
         fig = plt.figure(figsize=(8,6))
 
         plt.hist(data, bins=bins, color='green', alpha=0.4)
-        plt.xlabel('# of DigiHits produced by {} Gamma {} Hits'.format(gamma_type, light_type))
+        plt.xlabel('# of DigiHits produced by {} Gamma {} Hits'.format(gamma_type, light_type), fontsize=15)
         plt.yscale('log')
+        plt.tick_params(axis='both', which='major', labelsize=15)
         plt.title('TriggerNDigits/Threshold == {} \n /DAQ/SaveFailures/Mode {}'.format(threshold, sfm))
 
         x_limits = plt.gca().get_xlim()
         y_limits = plt.gca().get_ylim()
 
-        plt.annotate("In {} events we have DigiHits produced by".format(len(events)), xy=(0.10, 0.95), xycoords='axes fraction')
-        plt.annotate("the {} light from the {} Gamma".format(light_type, gamma_type), xy=(0.10, 0.90), xycoords='axes fraction')
-        plt.annotate("Average number of DigiHits per event is {:.0f}".format(np.mean(data)), xy=(0.10, 0.80), xycoords='axes fraction')
-        plt.annotate("Max number of DigiHits per event is {:.0f}".format(np.max(data)), xy=(0.10, 0.75), xycoords='axes fraction')
+        # plt.annotate("In {} events we have DigiHits produced by".format(len(events)), xy=(0.10, 0.95), xycoords='axes fraction', fontsize=15)
+        # plt.annotate("the {} light from the {} Gamma".format(light_type, gamma_type), xy=(0.10, 0.90), xycoords='axes fraction', fontsize=15)
+        # plt.annotate("Average number of DigiHits per event is {:.0f}".format(np.mean(data)), xy=(0.10, 0.80), xycoords='axes fraction', fontsize=15)
+        # plt.annotate("Max number of DigiHits per event is {:.0f}".format(np.max(data)), xy=(0.10, 0.75), xycoords='axes fraction', fontsize=15)
+        plt.annotate("n = {} events".format(len(events)), xy=(0.65, 0.95), xycoords="axes fraction", fontsize=15)
+        plt.annotate("$\mu$ = {:.0f} DigiHits ".format(np.mean(data)), xy=(0.65, 0.90), xycoords="axes fraction", fontsize=15)
+        plt.annotate("max = {:.0f} DigiHits".format(np.max(data)), xy=(0.65, 0.85), xycoords="axes fraction", fontsize=15)
 
         if plot:
             plt.show()
