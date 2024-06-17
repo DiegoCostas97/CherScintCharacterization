@@ -1,6 +1,7 @@
 # .gitignore file adapted from https://github.com/github/gitignore.git
 *.h5
 *.pdf
+*.png
 .DS_Store
 
 # Byte-compiled / optimized / DLL files
