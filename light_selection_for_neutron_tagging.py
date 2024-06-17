@@ -42,8 +42,8 @@ npz = str(sys.argv[1])
 threshold = int(sys.argv[2])   #/DAQ/TriggerNDigits/Threshold set in macros/daq.mac. Needed for the plots.
 sfm       = int(sys.argv[3])   #/DAQ/TriggerSaveFailures/Mode set in macros/daq.mac. Needed for the plots.
 nevents   = int(sys.argv[4])   # Number of events in the .npz
-neutron_candidate_data_fileName = str(sys.argv[4])
-vernose   = False
+neutron_candidate_data_fileName = str(sys.argv[5])
+verbose   = False
 
 # Creation of the three main DataFrames: trueHits, digiHits and tracks
 print("Creating DataFrames...")
@@ -59,7 +59,7 @@ print(" ")
 print("Running Simulation Checks...")
 neutronEnergySpectrum(df_simple_track, "./neutronEnergySpectrum.png")
 gammaEnergySpectrum(df_simple_track, "./gammaEnergySpectrum.png")
-nCaptureNumber(df_simple_track, nevents)
+nCaptureInEveryIsotope(df_simple_track, nevents)
 digiHitsNumber(df_digiHits, "./digiHitsNumber.png", threshold)
 eventsWithDigihits(df_digiHits, nevents)
 print(" ")
