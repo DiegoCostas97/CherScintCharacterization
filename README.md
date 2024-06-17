@@ -20,7 +20,7 @@ Runs the functions inside first.py and performs the actual analysis. This will r
         - Reconstruction variables (inputs + possible targets) stored in file (currently not used/deprecated, but functions are still there)
         - Data that will be used for the Neutron Tagging Algorithm
 
-Please note that this relies on a previous set of functions, contained inside the [WCSimFilePackages](https://github.com/DiegoCostas97/WCSimFilePackages) repository.
+Please note that this relies on a previous set of functions, contained inside `npz_to_df` at [WCSimFilePackages](https://github.com/DiegoCostas97/WCSimFilePackages) repository.
 
 ## How to run the code
 In order to run the analysis, just 
