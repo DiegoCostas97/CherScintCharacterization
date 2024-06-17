@@ -78,11 +78,10 @@ def nCaptureNumber(track_df, nevents):
     data = len(track_df[(track_df['track_creator_process'].values == 'nCapture') & (track_df['track_pid'].values == 22)])
     print("In {} events the neutron is captured in the water, this represents a {:.2f}% of the total".format(data, data/float(nevents)*100))
 
-def digiHitsNumber(digihit_df, path, threshold, lim, plot=False, save=True):
+def digiHitsNumber(digihit_df, path, threshold, plot=False, save=True):
     fig = plt.figure(figsize=(8,6))
     plt.hist(digihit_df.groupby('event_id').count()['digi_hit_pmt'].values);
     plt.vlines(threshold,0,300, color='r');
-    plt.xlim(0, lim);
 
     plt.xlabel("Number of DigiHits per Event")
 
@@ -189,7 +188,7 @@ def scintillation_info(e, df):
             for k in e[i]:
                 # If we have DigiHits for the current event and the electron appears in the
                 # DigiHits DataFrame, count and append the index
-                if temp_df.notna().any()[1] and k in j:
+                if k in j:
                     count += 1
                     indices_scint.append(l)
 
@@ -308,7 +307,7 @@ def anyCherenkov_info(e, df):
 
         for j in temp_df['digi_hit_truehit_parent_trackID']:
             for k in e[i]:
-                if temp_df.notna().any()[1] and k in j:
+                if k in j:
                     count += 1
 
         if count != 0:
@@ -333,7 +332,7 @@ def nCapture_Cherenkov_info(e, df):
             # Loop over the electrons created by the nCapture gamma in this event
             for k in e[i]:
                 # If this event actually has DigiHits and the electron is in the DigiHits DF, append the index and count
-                if temp_df.notna().any()[1] and k in j:
+                if k in j:
                     indices_nCCher.append(l)
                     count += 1
 
@@ -477,9 +476,8 @@ def save_data_for_nc_search(indices_cherenkov, indices_scintillation, df_digi, p
 
     common_evts  = [i for i in np.unique(df_digi['event_id']) if i in cher_events and i in scint_events]
 
-    if verbose:
-        print("There are {} events with both Tag and nCapture light".format(len(common_evts)))
-        print(" ")
+    print("There are {} events with both Tag and nCapture light".format(len(common_evts)))
+    print(" ")
 
     common_events_cher_indices  = df_cher[df_cher['event_id'].isin(common_evts)].index.to_numpy()
     common_events_scint_indices = df_scint[df_scint['event_id'].isin(common_evts)].index.to_numpy()
