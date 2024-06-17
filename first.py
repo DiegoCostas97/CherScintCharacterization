@@ -79,9 +79,9 @@ def nCaptureNumber(track_df, nevents):
     print("In {} events the neutron is captured in the water, this represents a {:.2f}% of the total".format(data, data/float(nevents)*100))
 
 def nCaptureInEveryIsotope(track_df, nevents):
-    deuteron = np.unique(df_simple_track[(df_simple_track['track_pid'].values == 1000010020)]['event_id'])
-    gd156    = np.unique(df_simple_track[(df_simple_track['track_pid'].values == 1000641560)]['event_id'])
-    gd158    = np.unique(df_simple_track[(df_simple_track['track_pid'].values == 1000641580)]['event_id'])
+    deuteron = np.unique(track_df[(track_df['track_pid'].values == 1000010020)]['event_id'])
+    gd156    = np.unique(track_df[(track_df['track_pid'].values == 1000641560)]['event_id'])
+    gd158    = np.unique(track_df[(track_df['track_pid'].values == 1000641580)]['event_id'])
 
     print(f"In {len(deuteron)} events the neutron is captured by a Hidrogen nucleus, this represents a {len(deuteron)/nevents*100:.1f}%")
     print(f"In {len(gd156)} events the neutron is captured by a 156Gd nucleus, this represents a {len(gd156)/nevents*100:.1f}%")
