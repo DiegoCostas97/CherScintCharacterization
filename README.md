@@ -7,7 +7,7 @@ Note that this code processes an `.npz` file produced by the [WatChMal DataTools
 - first.py
 This file has all the needed functions for the analysis.
 
-- second.py
+- light_selection_for_neutron_tagging.py
 Runs the functions inside first.py and performs the actual analysis. This will return
     - Checks
         - Neutron energy distribution plot.
@@ -17,7 +17,8 @@ Runs the functions inside first.py and performs the actual analysis. This will r
     - Analysis
         - Scintillation light coming from the Tag Gamma-Ray plot + info.
         - Cherenkov light coming from the nCapture Gamma-Ray plot + info.
-        - Reconstruction variables (inputs + possible targets) stored in file.
+        - Reconstruction variables (inputs + possible targets) stored in file (currently not used/deprecated, but functions are still there)
+        - Data that will be used for the Neutron Tagging Algorithm
 
 Please note that this relies on a previous set of functions, contained inside the [WCSimFilePackages](https://github.com/DiegoCostas97/WCSimFilePackages) repository.
 
@@ -34,6 +35,8 @@ python3 second.py int(/DAQ/TriggerNDigits/Threshold) int(/DAQ/TriggerSaveFailure
 Please note that you'll need to modify the path for the "paquetes" library (i.e. [WCSimFilePackages](https://github.com/DiegoCostas97/WCSimFilePackages))
 as well as the path for `first.py`.
 
+Once you have produced the data using `light_selection_for_neutron_tagging.py`, you can use `neutronTagging.py` to actually run the algorithm
+
 ## Required libraries
 ```
 numpy
@@ -44,3 +47,7 @@ pandas
 tqdm 
 PdfPages
 ```
+
+## To Do
+- Main goal now is to overall optimize the code, specially the functions that create the DataFrames from `npz_to_df` at [WCSimFilePackages](https://github.com/DiegoCostas97/WCSimFilePackages). This is a key point since it limits the number of events we can process.
+- Keep going with the Neutron Candidate Algorithm. Being able to save the information of the candidates it finds, for example.
