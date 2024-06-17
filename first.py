@@ -205,22 +205,22 @@ def scintillation_info(e, df):
 ###################################################################################################
 ###################################################################################################
 # Plot Light DigiHits
-def plot_light(data, bins, gamma_type, light_type, events, threshold, sfm, path, plot=False, save=True):
+def plot_light(data, bins, gamma_type, light_type, events, threshold, sfm, path, xlabel, plot=False, save=True, logY=True, title=True, different_label=False):
         fig = plt.figure(figsize=(8,6))
 
         plt.hist(data, bins=bins, color='green', alpha=0.4)
         plt.xlabel('# of DigiHits produced by {} Gamma {} Hits'.format(gamma_type, light_type), fontsize=15)
-        plt.yscale('log')
+        if different_label:
+            plt.xlabel(xlabel)
+        if logY:
+            plt.yscale('log')
         plt.tick_params(axis='both', which='major', labelsize=15)
-        plt.title('TriggerNDigits/Threshold == {} \n /DAQ/SaveFailures/Mode {}'.format(threshold, sfm))
+        if title:
+            plt.title('TriggerNDigits/Threshold == {} \n /DAQ/SaveFailures/Mode {}'.format(threshold, sfm))
 
         x_limits = plt.gca().get_xlim()
         y_limits = plt.gca().get_ylim()
 
-        # plt.annotate("In {} events we have DigiHits produced by".format(len(events)), xy=(0.10, 0.95), xycoords='axes fraction', fontsize=15)
-        # plt.annotate("the {} light from the {} Gamma".format(light_type, gamma_type), xy=(0.10, 0.90), xycoords='axes fraction', fontsize=15)
-        # plt.annotate("Average number of DigiHits per event is {:.0f}".format(np.mean(data)), xy=(0.10, 0.80), xycoords='axes fraction', fontsize=15)
-        # plt.annotate("Max number of DigiHits per event is {:.0f}".format(np.max(data)), xy=(0.10, 0.75), xycoords='axes fraction', fontsize=15)
         plt.annotate("n = {} events".format(len(events)), xy=(0.65, 0.95), xycoords="axes fraction", fontsize=15)
         plt.annotate("$\mu$ = {:.0f} DigiHits ".format(np.mean(data)), xy=(0.65, 0.90), xycoords="axes fraction", fontsize=15)
         plt.annotate("max = {:.0f} DigiHits".format(np.max(data)), xy=(0.65, 0.85), xycoords="axes fraction", fontsize=15)
@@ -460,3 +460,105 @@ def writeTriggerTimesPDF(nevents, df, path):
             plt.close()
 
     return 0
+
+###################################################################################################
+###################################################################################################
+###################################################################################################
+
+# SAVE DATAFRAME FOR NEUTRON CANDIDATE SEARCH
+# ################### FIRST EPOCH ##########################################################################
+# Creating a new DigiHits DataFrame just with the Tag and nCapture light
+def save_data_for_nc_search(indices_cherenkov, indices_scintillation, df_digi, path):
+    df_cher  = df_digiHits.loc[indices_cherenkov]
+    df_scint = df_digiHits.loc[indices_scintillation]
+
+    cher_events  = np.unique(df_cher['event_id'])
+    scint_events = np.unique(df_scint['event_id'])
+
+    common_evts  = [i for i in np.unique(df_digi['event_id']) if i in cher_events and i in scint_events]
+
+    if verbose:
+        print("There are {} events with both Tag and nCapture light".format(len(common_evts)))
+        print(" ")
+
+    common_events_cher_indices  = df_cher[df_cher['event_id'].isin(common_evts)].index.to_numpy()
+    common_events_scint_indices = df_scint[df_scint['event_id'].isin(common_evts)].index.to_numpy()
+
+    common_events_indices = np.sort(np.concatenate([common_events_cher_indices, common_events_scint_indices]))
+
+    # This are the final DataFrames that we will use:
+    # - df_final has the info of all Scintillation and Cherenkov Light that comes from tagGamma and nCapture
+    # - df_final_cher only has the info of the Cherenkov Light produced by nCapture
+    # - df_final_scint only has the info of the Scintillation Light produced by the tagGamma
+    df_final       = df_digi.loc[common_events_indices]
+    df_final_cher  = df_cher[df_cher['event_id'].isin(common_evts)]
+    df_final_scint = df_scint[df_scint['event_id'].isin(common_evts)]
+
+    ################### SECOND EPOCH ##########################################################################
+    # What is the time of the last Scintllation DigiHit?
+    last_tag_hit_time = df_final_scint.groupby('event_id')['digi_hit_time'].max()
+    repeated_last_tag_hit_time = df_final_cher['event_id'].map(last_tag_hit_time)
+
+    # Add the column "last_tag_hit_time" to df_final_cher
+    df_final_cher.loc[:, 'last_tag_hit_time'] = repeated_last_tag_hit_time
+
+    ################### THIRD EPOCH ###########################################################################
+    # Filter the DataFrame so now we just have the Cherenkov Light in the selected window
+    filter_df_final_cher = df_final_cher.loc[(df_final_cher['digi_hit_time'] >= df_final_cher['last_tag_hit_time']) & (df_final_cher['digi_hit_time'] < df_final_cher['last_tag_hit_time']+250000)]
+
+    ################### FOURTH EPOCH ##########################################################################
+    # Now we need to add the DarkNoise to our DataFrame since it represents the background we want the algorithm to discard
+    indices = []
+
+    for i in tqdm(np.unique(filter_df_final_cher['event_id']), desc="Creating DataFrame for Neutron Candidate Algorithm"):
+        temp_df = df_digi[df_digi['event_id'] == i]
+        tag_t   = filter_df_final_cher[filter_df_final_cher['event_id'].values == i]['last_tag_hit_time'].values[0]
+
+        for p, ind, cher_t in zip(temp_df['digi_hit_truehit_parent_trackID'], temp_df['digi_hit_truehit_parent_trackID'].index, temp_df['digi_hit_time']):
+            if -1 in p and cher_t >= tag_t and cher_t < tag_t + 250000:
+                indices.append(ind)
+
+    bkg_df = df_digi.loc[indices]
+
+    # Output Reconstruction Variables
+    # This is not necessary anymore (for the moment)
+    # This allows to save the variables of the CherenkovLight and DarkNoise so we can use them in a NN or something 
+    # charge, time, position, x, y, z = output_background_variables(bkg_df)
+
+    # Save the variables in a file
+    # path = "./background_variables.pkl"
+    # print("Saving Background Varibales at                         {}".format(path))
+
+    # with open(path, 'wb') as file:
+    #     pickle.dump([charge, time, position, x, y, z], file);
+
+    ################### FIFTH EPOCH ###########################################################################
+    # There are events with no DarkNoise which we do not want
+    events_with_no_dr           = [i for i in np.unique(filter_df_final_cher['event_id']) if i not in np.unique(bkg_df['event_id'])]
+    filter_df_final_cher_events = np.unique(filter_df_final_cher['event_id'])
+
+    final_events = [i for i in filter_df_final_cher_events if i not in events_with_no_dr]
+
+    ################### SIXTH EPOCH ###########################################################################
+    # Same as before, this is only needed within a possible and future NN/ML analysis
+    # Output Reconstruction Variables
+    # final_data = filter_df_final_cher[filter_df_final_cher['event_id'].isin(final_events)]
+    # charge, time, position, x, y, z, gamma_int_vertex, gamma_int_time, gamma_cre_vertex, neutr_int_vertex, neutr_int_time = output_reconstruction_variables(final_data, df_simple_track)
+
+    # Save the variables in a file
+    # path = "./reconstruction_variables.pkl"
+    # print("Saving Reconstruction Varibales at                     {}".format(path))
+
+    # with open(path, 'wb') as file:
+    #     pickle.dump([charge, time, position, x, y, z, gamma_int_vertex, gamma_int_time, gamma_cre_vertex, neutr_int_vertex, neutr_int_time], file);
+
+    ################### SEVENTH EPOCH ###########################################################################
+    merged_df = pd.concat([filter_df_final_cher, bkg_df])
+    # WE ARE JUST STORING THE FIRST CREATOR PROCESS OF THE SMEARED DIGIHIT FOR EASIER ANALYSIS IN THE NEUTRON CANDIDATE SECTION
+    # PLEASE NOTE THIS IS NOT AS BAD AS IT SEEMS SINCE THE HOLE ANALYSIS IS BEING MADE WITH THE ASUMPTION THAT EVERY DIGIHIT IS CREATED BY JUST ONE HIT
+    # MAYBE I SHOULD QUANTIFY THIS (WHAT % OF THE DIGIHITS ARE CREATED BY MORE THAN ONE HIT)
+    merged_df['digi_hit_truehit_creator'] = [i[0] for i in merged_df['digi_hit_truehit_creator']]
+    merged_df.sort_values(by='event_id', inplace=True)
+    merged_df.to_csv(path, index=False)
+
+    print("Saving Data for Neutron Candidate Search at {}".format(path))
