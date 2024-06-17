@@ -78,6 +78,17 @@ def nCaptureNumber(track_df, nevents):
     data = len(track_df[(track_df['track_creator_process'].values == 'nCapture') & (track_df['track_pid'].values == 22)])
     print("In {} events the neutron is captured in the water, this represents a {:.2f}% of the total".format(data, data/float(nevents)*100))
 
+def nCaptureInEveryIsotope(track_df, nevents):
+    deuteron = np.unique(df_simple_track[(df_simple_track['track_pid'].values == 1000010020)]['event_id'])
+    gd156    = np.unique(df_simple_track[(df_simple_track['track_pid'].values == 1000641560)]['event_id'])
+    gd158    = np.unique(df_simple_track[(df_simple_track['track_pid'].values == 1000641580)]['event_id'])
+
+    print(f"In {len(deuteron)} events the neutron is captured by a Hidrogen nucleus, this represents a {len(deuteron)/nevents*100:.1f}%")
+    print(f"In {len(gd156)} events the neutron is captured by a 156Gd nucleus, this represents a {len(gd156)/nevents*100:.1f}%")
+    print(f"In {len(gd158)} events the neutron is captured by a 158Gd nucleus, this represents a {len(gd158)/nevents*100:.1f}%")
+    print(f"Neutron is captured in the {(len(deuteron)+len(gd156)+len(gd158))/nevents*100}% of the events\n")
+    print(f"The rest of the events, in which we see other different isotopes, are not nCapture events, those isotopes are produced in scattering processes")
+
 def digiHitsNumber(digihit_df, path, threshold, plot=False, save=True):
     fig = plt.figure(figsize=(8,6))
     plt.hist(digihit_df.groupby('event_id').count()['digi_hit_pmt'].values);
@@ -468,8 +479,8 @@ def writeTriggerTimesPDF(nevents, df, path):
 # ################### FIRST EPOCH ##########################################################################
 # Creating a new DigiHits DataFrame just with the Tag and nCapture light
 def save_data_for_nc_search(indices_cherenkov, indices_scintillation, df_digi, path):
-    df_cher  = df_digiHits.loc[indices_cherenkov]
-    df_scint = df_digiHits.loc[indices_scintillation]
+    df_cher  = df_digi.loc[indices_cherenkov]
+    df_scint = df_digi.loc[indices_scintillation]
 
     cher_events  = np.unique(df_cher['event_id'])
     scint_events = np.unique(df_scint['event_id'])
