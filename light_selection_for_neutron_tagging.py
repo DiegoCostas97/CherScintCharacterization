@@ -95,3 +95,16 @@ print("Starting Neutron Tagging Data Preparation...")
 save_data_for_nc_search(indices_nCCher, indices_scint, df_digiHits, neutron_candidate_data_fileName)
 print(" ")
 print("Process Finished!")
+
+# Energy and Time distribution plots
+# scintillation_profile_events, scintillation_profile_indices = scintillation_profile(electrons_from_tagGamma, df_simple_track)
+# cherenkov_profile_events, cherenkov_profile_indices = cherenkov_profile(electrons_from_nCapture, df_simple_track)
+
+# dfS = df_simple_track.loc[scintillation_profile_indices]
+# dfC = df_simple_track.loc[cherenkov_profile_indices]
+
+# plot_light(dfS['track_energy']*1e6, 10, "nCapture", "Cherenkov", scintillation_profile_events, threshold, sfm, "./cher_light.pdf", xlabel="Scintillation Light From tagGamma E Distribution [eV]", plot=True, save=False, logY=False, title=False, different_label=True, legend='left');
+# plot_light(dfC['track_energy']*1e6, 10, "nCapture", "Cherenkov", cherenkov_profile_events, threshold, sfm, "./cher_light.pdf", xlabel="Cherenkov Light From nCapture E Distribution [eV]", color='purple', plot=True, save=False, logY=False, title=False, different_label=True, legend='left');
+
+# plot_light(dfS['track_ti'], 10, "nCapture", "Cherenkov", scintillation_profile_events, threshold, sfm, "./cher_light.pdf", xlabel="Scintillation Light From tagGamma T [ns]", plot=True, save=False, logY=True, logX=True, title=False, different_label=True, legend='right');
+# plot_light(dfC['track_ti'], 10, "nCapture", "Cherenkov", cherenkov_profile_events, threshold, sfm, "./cher_light.pdf", xlabel="Cherenkov Light From nCapture T [ns]", color='purple', plot=True, save=False, logY=True, logX=True, title=False, different_label=True, legend='right');
