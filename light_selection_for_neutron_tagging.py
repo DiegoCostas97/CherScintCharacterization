@@ -89,7 +89,7 @@ if verbose:
     print("Average number of DigiHits per event is {:.0f}".format(np.mean(counts_nCCher)))
 
 plot_light(counts_scint, 50, "Tag", "Scintillation", events_scint, threshold, sfm, "./scint_light.pdf", xlabel="", plot=False, save=True, logY=True, title=True, different_label=False);
-plot_light(counts_nCCher, 20, "nCapture", "Cherenkov", events_nCCher, threshold, sfm, "./cher_light.pdf", xlabel="", plot=False, save=True, logY=True, title=True, different_label=False);
+plot_light(counts_nCCher, 20, "nCapture", "Cherenkov", events_nCCher, threshold, sfm, "./cher_light.pdf", xlabel="", color='purple', plot=False, save=True, logY=True, title=True, different_label=False);
 
 print("Starting Neutron Tagging Data Preparation...")
 save_data_for_nc_search(indices_nCCher, indices_scint, df_digiHits, neutron_candidate_data_fileName)
