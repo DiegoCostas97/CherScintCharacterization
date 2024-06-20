@@ -102,13 +102,16 @@ def nCandidateSearch(df, thresh):
     df_unClusteredEvents = full_df[full_df['event_id'].isin(events_with_no_cluster)]
     df_clusteredEvents   = full_df[full_df['event_id'].isin(events_with_cluster)]
 
-    print(" ")
-    print("Plotting and saving plots...")
-    # Plot
-    data1 = df_unClusteredEvents[df_unClusteredEvents['digi_hit_truehit_creator'].values == "Cerenkov"].groupby('event_id').count()['digi_hit_pmt'].values
-    plot_light(data1, 10, "Tag", "Scintillation", events_with_no_cluster, 5, 0, "./no_candidate.png", xlabel="# of Cherenkov DigiHits in Events with no nCandidate located", plot=False, save=True, logY=False, title=False, different_label=True)
+    return df_unCLusteredEvents, df_clusteredEvents, events_with_no_cluster, events_with_cluster
 
-    data2 = df_clusteredEvents[df_clusteredEvents['digi_hit_truehit_creator'].values == "Cerenkov"].groupby('event_id').count()['digi_hit_pmt'].values
-    plot_light(data2, 20, "Tag", "Scintillation", events_with_cluster, 5, 0, "./yes_candidate.png", "# of DigiHits in selected clusters", plot=False, save=True, logY=False, title=False, different_label=True);
+unclustered_df, clustered_df, events_Uncluster, events_Cluster = nCandidateSearch(full_df, threshold)
 
-nCandidateSearch(full_df, threshold)
+print("Plotting and saving plots...")
+# Plot
+data1 = unclustered_df[unclustered_df['digi_hit_truehit_creator'].values == "Cerenkov"].groupby('event_id').count()['digi_hit_pmt'].values
+plot_light(data1, 10, "Tag", "Scintillation", events_Uncluster, 5, 0, "./no_candidate.png", xlabel="# of Cherenkov DigiHits in Events with no nCandidate located", color='red', plot=False, save=True, logY=False, title=False, different_label=True)
+
+data2 = clustered_df[clustered_df['digi_hit_truehit_creator'].values == "Cerenkov"].groupby('event_id').count()['digi_hit_pmt'].values
+plot_light(data2, 20, "Tag", "Scintillation", events_Cluster, 5, 0, "./yes_candidate.png", "# of DigiHits in selected clusters", color='gold', plot=False, save=True, logY=False, title=False, different_label=True);
+
+
