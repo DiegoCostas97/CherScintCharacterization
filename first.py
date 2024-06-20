@@ -358,7 +358,7 @@ def nCapture_Cherenkov_info(e, df):
             # Loop over the electrons created by the nCapture gamma in this event
             for k in e[i]:
                 # If this event actually has DigiHits and the electron is in the DigiHits DF, append the index and count
-                if k in j and 'Cerenkov' in c::
+                if k in j and 'Cerenkov' in c:
                     indices_nCCher.append(l)
                     count += 1
 

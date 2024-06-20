@@ -102,7 +102,7 @@ def nCandidateSearch(df, thresh):
     df_unClusteredEvents = full_df[full_df['event_id'].isin(events_with_no_cluster)]
     df_clusteredEvents   = full_df[full_df['event_id'].isin(events_with_cluster)]
 
-    return df_unCLusteredEvents, df_clusteredEvents, events_with_no_cluster, events_with_cluster
+    return df_unClusteredEvents, df_clusteredEvents, events_with_no_cluster, events_with_cluster
 
 unclustered_df, clustered_df, events_Uncluster, events_Cluster = nCandidateSearch(full_df, threshold)
 
