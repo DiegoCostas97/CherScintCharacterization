@@ -6,8 +6,9 @@ import matplotlib.pyplot as plt
 
 from tqdm import tqdm
 
-path_to_first    = "/Users/diiego/Library/Mobile Documents/com~apple~CloudDocs/Desktop/DIEGO_cloud/USC/PHD/HK/HK SOURCES/code/ambe_source/npz_ana/cher_scint_characterization"
-path_to_paquetes = "/Users/diiego/Library/Mobile Documents/com~apple~CloudDocs/Desktop/DIEGO_cloud/USC/PHD/HK/HK SOURCES/code/ambe_source/npz_ana/paquetes"
+path_to_first    = "/mnt/netapp2/Store_uni/home/usc/ie/dcr/software/hk/CherScintCharacterization"
+path_to_paquetes = "/mnt/netapp2/Store_uni/home/usc/ie/dcr/software/hk/WCSimFilePackages"
+
 sys.path.append(path_to_paquetes)
 sys.path.append(path_to_first)
 
@@ -91,5 +92,23 @@ def nCandidateSearch(df, thresh):
         print(f'This represent the {unique_candidates/len(event)*100:.2f}% of the total.\n')
         print(f'We have {zero_candidates} events in which we cannot find any candidate.')
         print(f'We have {multiple_candidates} events in which we have more than one valid candidate.')
+
+    print(" ")
+    print("Analyzing events in which the algorithm was not able to find any candidate...")
+    # What happens with events with no nCandidate?
+    events_with_no_cluster = np.array([i[0] for i in hits_in_cluster_per_event if i[1] == []])
+    events_with_cluster    = np.array([i[0] for i in hits_in_cluster_per_event if i[1] != []])
+
+    df_unClusteredEvents = full_df[full_df['event_id'].isin(events_with_no_cluster)]
+    df_clusteredEvents   = full_df[full_df['event_id'].isin(events_with_cluster)]
+
+    print(" ")
+    print("Plotting and saving plots...")
+    # Plot
+    data1 = df_unClusteredEvents[df_unClusteredEvents['digi_hit_truehit_creator'].values == "Cerenkov"].groupby('event_id').count()['digi_hit_pmt'].values
+    plot_light(data1, 10, "Tag", "Scintillation", events_with_no_cluster, 5, 0, "./no_candidate.png", xlabel="# of Cherenkov DigiHits in Events with no nCandidate located", plot=False, save=True, logY=False, title=False, different_label=True)
+
+    data2 = df_clusteredEvents[df_clusteredEvents['digi_hit_truehit_creator'].values == "Cerenkov"].groupby('event_id').count()['digi_hit_pmt'].values
+    plot_light(data2, 20, "Tag", "Scintillation", events_with_cluster, 5, 0, "./yes_candidate.png", "# of DigiHits in selected clusters", plot=False, save=True, logY=False, title=False, different_label=True);
 
 nCandidateSearch(full_df, threshold)

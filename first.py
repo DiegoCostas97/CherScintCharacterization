@@ -23,7 +23,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 def neutronEnergySpectrum(track_df, path, plot=False, save=True):
     fig = plt.figure(figsize=(8,6))
     neutron_mass = 939.56542052
-    df = pd.read_csv("/Users/diiego/Library/Mobile Documents/com~apple~CloudDocs/Desktop/DIEGO_cloud/USC/PHD/HK/HK SOURCES/code/ambe_source/npz_ana/copy_alnspectra_A.dat", 
+    df = pd.read_csv("../WCSimFilePackages/copy_alnspectra_A.dat", 
                      sep=" ")
 
     energy = (track_df[track_df['track_id'] == 1]['track_energy'] - neutron_mass)
@@ -40,9 +40,9 @@ def neutronEnergySpectrum(track_df, path, plot=False, save=True):
     valuesQ2[valuesQ2==0] = np.nan
 
     plt.bar(bins[0:-1], normalized_counts, width=0.5, color='lightseagreen', label='MC Simulated Data');
-    plt.plot(df['Energy'], valuesQ0, linestyle='-.', color='red', label='Ground State Contribution');
-    plt.plot(df['Energy'], valuesQ1, linestyle='--', color='yellow', label='First Excited State Contribution');
-    plt.plot(df['Energy'], valuesQ2, linestyle=':', color='blue', label='Second Excited State Contribution');
+    plt.plot(df['Energy'].to_numpy(), valuesQ0, linestyle='-.', color='red', label='Ground State Contribution');
+    plt.plot(df['Energy'].to_numpy(), valuesQ1, linestyle='--', color='yellow', label='First Excited State Contribution');
+    plt.plot(df['Energy'].to_numpy(), valuesQ2, linestyle=':', color='blue', label='Second Excited State Contribution');
 
     plt.xlabel('Neutron Energy [MeV]');
 

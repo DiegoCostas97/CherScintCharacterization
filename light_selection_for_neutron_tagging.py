@@ -4,32 +4,14 @@ import pickle
 import numpy as np
 import pandas as pd
 
-path_to_first    = "/Users/diiego/Library/Mobile Documents/com~apple~CloudDocs/Desktop/DIEGO_cloud/USC/PHD/HK/HK SOURCES/code/ambe_source/npz_ana/cher_scint_characterization"
-path_to_paquetes = "/Users/diiego/Library/Mobile Documents/com~apple~CloudDocs/Desktop/DIEGO_cloud/USC/PHD/HK/HK SOURCES/code/ambe_source/npz_ana/paquetes"
+path_to_first    = "/mnt/netapp2/Store_uni/home/usc/ie/dcr/software/hk/CherScintCharacterization"
+path_to_paquetes = "/mnt/netapp2/Store_uni/home/usc/ie/dcr/software/hk/WCSimFilePackages"
 sys.path.append(path_to_paquetes)
 sys.path.append(path_to_first)
 
 from npz_to_df import truehits_info_to_df
 from npz_to_df import simple_track_info_to_df
 from npz_to_df import digihits_info_to_df
-
-# from first import neutronEnergySpectrum
-# from first import gammaEnergySpectrum
-# from first import nCaptureNumber
-# from first import digiHitsNumber
-# from first import eventsWithDigihits
-# from first import electrons_from_Scintillation
-# from first import real_scintillation_electrons
-# from first import scintillation_info
-# from first import electrons_from_Cherenkov
-# from first import real_cherenkov_electrons
-# from first import anyCherenkov_info
-# from first import nCapture_Cherenkov_info
-# from first import plot_light
-# from first import output_reconstruction_variables
-# from first import output_background_variables
-# from first import writeTriggerTimesPDF
-# from first import save_data_for_nc_search
 
 from first import *
 
@@ -106,8 +88,8 @@ if verbose:
     print("Maximum number of DigiHits per event is {}".format(np.max(counts_nCCher)))
     print("Average number of DigiHits per event is {:.0f}".format(np.mean(counts_nCCher)))
 
-plot_light(counts_scint, 50, "Tag", "Scintillation", events_scint, threshold, sfm, "./scint_light.pdf", xlabel="", plot=True, save=False, logY=True, title=True, different_label=False);
-plot_light(counts_nCCher, 20, "nCapture", "Cherenkov", events_nCCher, threshold, sfm, "./cher_light.pdf", xlabel="", plot=True, save=False, logY=True, title=True, different_label=False);
+plot_light(counts_scint, 50, "Tag", "Scintillation", events_scint, threshold, sfm, "./scint_light.pdf", xlabel="", plot=False, save=True, logY=True, title=True, different_label=False);
+plot_light(counts_nCCher, 20, "nCapture", "Cherenkov", events_nCCher, threshold, sfm, "./cher_light.pdf", xlabel="", plot=False, save=True, logY=True, title=True, different_label=False);
 
 print("Starting Neutron Tagging Data Preparation...")
 save_data_for_nc_search(indices_nCCher, indices_scint, df_digiHits, neutron_candidate_data_fileName)
