@@ -192,14 +192,15 @@ def scintillation_info(e, df):
         temp_df = df[df['event_id'] == i]
         indices = temp_df['digi_hit_truehit_parent_trackID'].index
         values  = temp_df['digi_hit_truehit_parent_trackID']
+        creators = temp_df['digi_hit_truehit_creator']
 
         # Loop over the hit parent of the digihits in the event and the index in the DF
-        for j,l in zip(values, indices):
+        for j,l,c in zip(values, indices, creators):
             # Loop over the electrons that come from the tag gamma in this event
             for k in e[i]:
                 # If we have DigiHits for the current event and the electron appears in the
                 # DigiHits DataFrame, count and append the index
-                if k in j:
+                if k in j and 'Scintillation' in c:
                     count += 1
                     indices_scint.append(l)
 
@@ -337,13 +338,16 @@ def nCapture_Cherenkov_info(e, df):
         count = 0
         # Create a sub-DataFrame of the current event
         temp_df = df[df['event_id'].values == i]
+        indices = temp_df['digi_hit_truehit_parent_trackID'].index
+        values  = temp_df['digi_hit_truehit_parent_trackID']
+        creators = temp_df['digi_hit_truehit_creator']
 
         # Loop over the hit parents that created the DigiHits and the index
-        for j, l in zip(temp_df['digi_hit_truehit_parent_trackID'], temp_df['digi_hit_truehit_parent_trackID'].index):
+        for j, l, c in zip(values, indices, creators):
             # Loop over the electrons created by the nCapture gamma in this event
             for k in e[i]:
                 # If this event actually has DigiHits and the electron is in the DigiHits DF, append the index and count
-                if k in j:
+                if k in j and 'Cerenkov' in c::
                     indices_nCCher.append(l)
                     count += 1
 
@@ -571,3 +575,73 @@ def save_data_for_nc_search(indices_cherenkov, indices_scintillation, df_digi, p
     merged_df.to_csv(path, index=False)
 
     print("Saving Data for Neutron Candidate Search at {}".format(path))
+
+
+def scintillation_profile(e, df):
+    events_scint  = []
+    counts_scint  = []
+    indices_scint = []
+
+    # Loop over the events in which we have electrons from tag gamma
+    for i in tqdm(e.keys(), desc="Running scintillation_profile", unit="iter", dynamic_ncols=True):
+        count = 0
+
+        # Create a sub-DataFrame with the info of this event
+        df.reset_index(drop=True, inplace=True) # Need to properly set the tracks df index, just in this case 
+                                                     # cause now I don't remember if this would affect any other part
+        temp_df = df[df['event_id'].values == i]
+        indices = temp_df['track_parent'].index
+        values  = temp_df['track_parent'].to_numpy()
+        creators = temp_df['track_creator_process']
+
+        # Loop over the hit parent of the digihits in the event and the index in the DF
+        # Loop over the electrons that come from the tag gamma in this event
+        for v,l,c in zip(values, indices, creators):
+            for k in e[i]:
+            # If we have DigiHits for the current event and the electron appears in the
+            # DigiHits DataFrame, count and append the index
+            # if temp_df.notna().any()[1] and k in j: NO ES NECESARIO (CASI SEGURO)
+                if k == v and 'Scintillation' in c:
+                    count += 1
+                    indices_scint.append(l)
+
+        # If we are in a event in which some of the DigiHits are created by the tag gamma,
+        # append the events and the counts
+        if count != 0:
+            events_scint.append(i)
+            counts_scint.append(count)
+
+    return events_scint, indices_scint
+
+def cherenkov_profile(e, df):
+    events_nCCher  = []
+    counts_nCCher  = []
+    indices_nCCher = []
+
+    # Loop over the events in which we have electrons from the nCapture gamma
+    for i in tqdm(e.keys(), desc="Running cherenkov_profile", unit="iter", dynamic_ncols=True):
+        count = 0
+        # Create a sub-DataFrame of the current event
+        df.reset_index(drop=True, inplace=True) # Need to properly set the tracks df index, just in this case
+                                                     # cause now I don't remember if this would affect any other part
+        temp_df = df[df['event_id'].values == i]
+        indices = temp_df['track_parent'].index
+        values  = temp_df['track_parent'].to_numpy()
+        creators = temp_df['track_creator_process']
+
+        # Loop over the hit parents that created the DigiHits and the index
+        for j, l, c in zip(values, indices, creators):
+            # Loop over the electrons created by the nCapture gamma in this event
+            for k in e[i]:
+                # If this event actually has DigiHits and the electron is in the DigiHits DF, append the index and count
+                # if temp_df.notna().any()[1] and k in j: NO ES NECESARIO (CASI SEGURO)
+                if k == j and 'Cerenkov' in c:
+                    indices_nCCher.append(l)
+                    count += 1
+
+        # If we are in an event we want to append, do it and print info
+        if count != 0:
+            events_nCCher.append(i)
+            counts_nCCher.append(count)
+
+    return events_nCCher, indices_nCCher
