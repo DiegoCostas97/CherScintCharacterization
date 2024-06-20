@@ -216,25 +216,35 @@ def scintillation_info(e, df):
 ###################################################################################################
 ###################################################################################################
 # Plot Light DigiHits
-def plot_light(data, bins, gamma_type, light_type, events, threshold, sfm, path, xlabel, plot=False, save=True, logY=True, title=True, different_label=False):
+def plot_light(data, bins, gamma_type, light_type, events, threshold, sfm, path, xlabel, color='green', plot=False, save=True, logY=True, logX=False, title=True, different_label=False, legend='right'):
         fig = plt.figure(figsize=(8,6))
 
-        plt.hist(data, bins=bins, color='green', alpha=0.4)
+        plt.hist(data, bins=bins, color=color, alpha=0.4)
         plt.xlabel('# of DigiHits produced by {} Gamma {} Hits'.format(gamma_type, light_type), fontsize=15)
+
         if different_label:
             plt.xlabel(xlabel)
         if logY:
             plt.yscale('log')
+        if logX:
+            plt.xscale('log')
+
         plt.tick_params(axis='both', which='major', labelsize=15)
+
         if title:
             plt.title('TriggerNDigits/Threshold == {} \n /DAQ/SaveFailures/Mode {}'.format(threshold, sfm))
 
         x_limits = plt.gca().get_xlim()
         y_limits = plt.gca().get_ylim()
 
-        plt.annotate("n = {} events".format(len(events)), xy=(0.65, 0.95), xycoords="axes fraction", fontsize=15)
-        plt.annotate("$\mu$ = {:.0f} DigiHits ".format(np.mean(data)), xy=(0.65, 0.90), xycoords="axes fraction", fontsize=15)
-        plt.annotate("max = {:.0f} DigiHits".format(np.max(data)), xy=(0.65, 0.85), xycoords="axes fraction", fontsize=15)
+        if legend == 'left':
+            plt.annotate("n = {} events".format(len(events)), xy=(0.05, 0.95), xycoords="axes fraction", fontsize=15)
+            plt.annotate("$\mu$ = {:.0f} DigiHits ".format(np.mean(data)), xy=(0.05, 0.90), xycoords="axes fraction", fontsize=15)
+            plt.annotate("max = {:.0f} DigiHits".format(np.max(data)), xy=(0.05, 0.85), xycoords="axes fraction", fontsize=15)
+        elif legend == 'right':
+            plt.annotate("n = {} events".format(len(events)), xy=(0.65, 0.95), xycoords="axes fraction", fontsize=15)
+            plt.annotate("$\mu$ = {:.0f} DigiHits ".format(np.mean(data)), xy=(0.65, 0.90), xycoords="axes fraction", fontsize=15)
+            plt.annotate("max = {:.0f} DigiHits".format(np.max(data)), xy=(0.65, 0.85), xycoords="axes fraction", fontsize=15)
 
         if plot:
             plt.show()
@@ -245,6 +255,7 @@ def plot_light(data, bins, gamma_type, light_type, events, threshold, sfm, path,
         plt.close
 
         return 0
+
 
 ###################################################################################################
 ###################################################################################################
