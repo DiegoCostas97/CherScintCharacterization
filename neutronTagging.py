@@ -6,9 +6,8 @@ import matplotlib.pyplot as plt
 
 from tqdm import tqdm
 
-path_to_first    = "/mnt/netapp2/Store_uni/home/usc/ie/dcr/software/hk/CherScintCharacterization"
-path_to_paquetes = "/mnt/netapp2/Store_uni/home/usc/ie/dcr/software/hk/WCSimFilePackages"
-
+path_to_first    = "/Users/diiego/Library/Mobile Documents/com~apple~CloudDocs/Desktop/DIEGO_cloud/USC/PHD/HK/HK SOURCES/code/ambe_source/npz_ana/cher_scint_characterization"
+path_to_paquetes = "/Users/diiego/Library/Mobile Documents/com~apple~CloudDocs/Desktop/DIEGO_cloud/USC/PHD/HK/HK SOURCES/code/ambe_source/npz_ana/paquetes"
 sys.path.append(path_to_paquetes)
 sys.path.append(path_to_first)
 
