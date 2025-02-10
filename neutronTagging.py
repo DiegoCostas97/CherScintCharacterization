@@ -1,3 +1,4 @@
+# %%
 import sys
 
 import pandas            as pd
@@ -13,12 +14,14 @@ sys.path.append(path_to_first)
 
 from first import plot_light
 
+# %%
 verbose = True
 path_to_data = str(sys.argv[1])
 threshold    = int(sys.argv[2])
 
 full_df = pd.read_csv(path_to_data)
 
+# %%
 # Function that checks if there are values in list separated more than 20 units
 def sep_20ns(lista):
     for i in range(len(lista)):
@@ -30,7 +33,6 @@ def sep_20ns(lista):
 def nCandidateSearch(df, thresh):
     # Select the events of the DataFrame
     events = np.unique(full_df['event_id'])
-    thresh = 5
 
     # Create an empty list that will store the list of clusters and list of t0s in every event
     hits_in_cluster_per_event = []
@@ -103,6 +105,7 @@ def nCandidateSearch(df, thresh):
 
     return df_unClusteredEvents, df_clusteredEvents, events_with_no_cluster, events_with_cluster
 
+# %%
 unclustered_df, clustered_df, events_Uncluster, events_Cluster = nCandidateSearch(full_df, threshold)
 
 print("Plotting and saving plots...")
@@ -112,5 +115,3 @@ plot_light(data1, 10, "Tag", "Scintillation", events_Uncluster, 5, 0, "./no_cand
 
 data2 = clustered_df[clustered_df['digi_hit_truehit_creator'].values == "Cerenkov"].groupby('event_id').count()['digi_hit_pmt'].values
 plot_light(data2, 20, "Tag", "Scintillation", events_Cluster, 5, 0, "./yes_candidate.png", "# of DigiHits in selected clusters", color='gold', plot=False, save=True, logY=False, title=False, different_label=True);
-
-

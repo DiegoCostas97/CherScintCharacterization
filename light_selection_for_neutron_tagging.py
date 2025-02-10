@@ -1,3 +1,4 @@
+# %%
 import sys
 import pickle
 
@@ -17,7 +18,7 @@ from first import *
 
 from tqdm import tqdm
 
-
+# %%
 # Path to the npz file in our machine
 npz = str(sys.argv[1])
 
@@ -27,6 +28,7 @@ nevents   = int(sys.argv[4])   # Number of events in the .npz
 neutron_candidate_data_fileName = str(sys.argv[5])
 verbose   = False
 
+# %%
 # Creation of the three main DataFrames: trueHits, digiHits and tracks
 print("Creating DataFrames...")
 df_trueHits       = truehits_info_to_df(npz)
@@ -37,6 +39,7 @@ df_simple_track   = simple_track_info_to_df(npz) # This is simpler and less memo
 print("DataFrames Created!")
 print(" ")
 
+# %%
 # Simulation Check Plots and prints
 print("Running Simulation Checks...")
 neutronEnergySpectrum(df_simple_track, "./neutronEnergySpectrum.png")
@@ -46,6 +49,7 @@ digiHitsNumber(df_digiHits, "./digiHitsNumber.png", threshold)
 eventsWithDigihits(df_digiHits, nevents)
 print(" ")
 
+# %%
 # Selection of every Scintillation Photon
 events_with_Scintillation = np.unique(df_simple_track[df_simple_track['track_creator_process'] == 'Scintillation']['event_id'].to_numpy())
 sHits_Tag_temp            = df_trueHits[(df_trueHits['event_id'].isin(events_with_Scintillation))]
@@ -68,6 +72,7 @@ if verbose:
     print("Maximum number of DigiHits per event is {}".format(np.max(counts_scint)))
     print("Average number of DigiHits per event is {:.0f}".format(np.mean(counts_scint)))
 
+# %%
 # Selection of every Cherenkov Photon
 events_with_nCapture = np.unique(df_simple_track[df_simple_track['track_creator_process'] == 'nCapture']['event_id'].to_numpy())
 temp_cHits_nCapture  = df_trueHits[df_trueHits['event_id'].isin(events_with_nCapture)]
@@ -88,6 +93,7 @@ if verbose:
     print("Maximum number of DigiHits per event is {}".format(np.max(counts_nCCher)))
     print("Average number of DigiHits per event is {:.0f}".format(np.mean(counts_nCCher)))
 
+# %%
 plot_light(counts_scint, 50, "Tag", "Scintillation", events_scint, threshold, sfm, "./scint_light.png", xlabel="", plot=False, save=True, logY=True, title=True, different_label=False);
 plot_light(counts_nCCher, 20, "nCapture", "Cherenkov", events_nCCher, threshold, sfm, "./cher_light.png", xlabel="", color='purple', plot=False, save=True, logY=True, title=True, different_label=False);
 
@@ -108,3 +114,5 @@ print("Process Finished!")
 
 # plot_light(dfS['track_ti'], 10, "nCapture", "Cherenkov", scintillation_profile_events, threshold, sfm, "./cher_light.pdf", xlabel="Scintillation Light From tagGamma T [ns]", plot=True, save=False, logY=True, logX=True, title=False, different_label=True, legend='right');
 # plot_light(dfC['track_ti'], 10, "nCapture", "Cherenkov", cherenkov_profile_events, threshold, sfm, "./cher_light.pdf", xlabel="Cherenkov Light From nCapture T [ns]", color='purple', plot=True, save=False, logY=True, logX=True, title=False, different_label=True, legend='right');
+
+# %%
