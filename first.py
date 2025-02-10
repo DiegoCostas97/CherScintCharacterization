@@ -23,7 +23,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 def neutronEnergySpectrum(track_df, path, plot=False, save=True):
     fig = plt.figure(figsize=(8,6))
     neutron_mass = 939.56542052
-    df = pd.read_csv("../WCSimFilePackages/copy_alnspectra_A.dat", 
+    df = pd.read_csv("/Users/diiego/Library/Mobile Documents/com~apple~CloudDocs/Desktop/DIEGO_cloud/USC/PHD/HK/HK SOURCES/code/ambe_source/npz_ana/copy_alnspectra_A.dat",
                      sep=" ")
 
     energy = (track_df[track_df['track_id'] == 1]['track_energy'] - neutron_mass)
@@ -56,7 +56,7 @@ def neutronEnergySpectrum(track_df, path, plot=False, save=True):
 
     plt.close
 
-    return 0
+    return
 
 def gammaEnergySpectrum(track_df, path, plot=False, save=True):
     fig = plt.figure(figsize=(8,6))
@@ -71,7 +71,7 @@ def gammaEnergySpectrum(track_df, path, plot=False, save=True):
 
     plt.close
 
-    return 0
+    return
 
 
 def nCaptureNumber(track_df, nevents):
@@ -569,12 +569,12 @@ def save_data_for_nc_search(indices_cherenkov, indices_scintillation, df_digi, p
     # final_data = filter_df_final_cher[filter_df_final_cher['event_id'].isin(final_events)]
     # charge, time, position, x, y, z, gamma_int_vertex, gamma_int_time, gamma_cre_vertex, neutr_int_vertex, neutr_int_time = output_reconstruction_variables(final_data, df_simple_track)
 
-    # Save the variables in a file
+    # # Save the variables in a file
     # path = "./reconstruction_variables.pkl"
     # print("Saving Reconstruction Varibales at                     {}".format(path))
 
     # with open(path, 'wb') as file:
-    #     pickle.dump([charge, time, position, x, y, z, gamma_int_vertex, gamma_int_time, gamma_cre_vertex, neutr_int_vertex, neutr_int_time], file);
+        # pickle.dump([charge, time, position, x, y, z, gamma_int_vertex, gamma_int_time, gamma_cre_vertex, neutr_int_vertex, neutr_int_time], file);
 
     ################### SEVENTH EPOCH ###########################################################################
     merged_df = pd.concat([filter_df_final_cher, bkg_df])
